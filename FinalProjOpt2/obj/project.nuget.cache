@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "qqkuowDbhfr1OzECRMQNe7F8iiS7i8sVNQSR67CytmA9HQuZejbOF5+ZWMGFQDTVkPNyQZvTKAsobkXVwdnNrQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\theo.lindqvist\\Documents\\NTI Programmering\\FinalProjOpt2\\FinalProjOpt2\\FinalProjOpt2.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\theo.lindqvist\\.nuget\\packages\\raylib-cs\\4.2.0.2\\raylib-cs.4.2.0.2.nupkg.sha512",
+    "C:\\Users\\theo.lindqvist\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512"
+  ],
+  "logs": []
+}

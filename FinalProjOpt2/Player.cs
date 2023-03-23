@@ -8,7 +8,6 @@ public class Player
     public Rectangle rect = new Rectangle(0, 0, 50, 75);
     public bool collidesWithFloor = false;
     public bool lastleft = false;
-    Level l = new(2);
     public float verticalVelocity = 0f;
     public Player()
     {
@@ -17,7 +16,7 @@ public class Player
         sprites.Add(Raylib.LoadTexture("Sprites/air.png"));
     }
 
-    public bool Movement(bool lastleft)
+    public bool Movement(bool lastleft, Level currentLevel)
     {
         if (Raylib.IsKeyDown(KeyboardKey.KEY_A) && rect.x > 0)
         {
@@ -31,7 +30,7 @@ public class Player
         }
 
         collidesWithFloor = false;
-        foreach (Rectangle f in l.floors)
+        foreach (Rectangle f in currentLevel.floors)
         {
             if (Raylib.CheckCollisionRecs(rect, f))
             {
@@ -51,7 +50,7 @@ public class Player
                 }
             }
         }
-        if (!collidesWithFloor)
+        if (!collidesWithFloor && verticalVelocity > -15)
         {
             verticalVelocity -= 0.3f;
         }
@@ -116,6 +115,12 @@ public class Player
                     Raylib.DrawTextureRec(sprites[2], sourcerec, new Vector2(player.x, player.y), Color.WHITE);
                 }
             }
+        }
+    }
+
+    public void DeathCheck(){
+        if (rect.y > Global.screenheight){
+            Global.currentscene = "death";
         }
     }
 }

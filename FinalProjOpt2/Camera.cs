@@ -18,7 +18,7 @@ public class Camera
     }
     public void CameraBounds()
     {
-        if (p.rect.x >= 265 && p.rect.x <= 3000)
+        if (p.rect.x >= 265)
         {
             c.target = new Vector2((p.rect.x + 250), (Global.screenheight / 2));
         }

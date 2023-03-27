@@ -9,16 +9,19 @@ UI u = new UI();
 Camera c = new Camera(p);
 
 Level levelOne = new Level(2, 1938, false, p);
-Level levelTwo = new Level(3, 1938, true, p);
+Level levelTwo = new Level(5, 1938, true, p);
 Level levelThree = new Level(2, 1938, true, p);
+
+Obstacle obsOne = new Obstacle(400, 500, 600 , 5000, 5000, 5000);
+Obstacle obsTwo = new Obstacle(400, 600, 800, 535, 535, 535);
 
 levelOne.nextLevel = levelTwo;
 levelTwo.nextLevel = levelThree;
+obsOne.nextObstacle = obsTwo;
 
 Level currentLevel = levelOne;
+Obstacle currentObstacles = obsOne;
 
-int frame = 1;
-float elapsed = 0;
 string levelDied = "";
 int deathTimer = 300;
 
@@ -27,6 +30,11 @@ c.InitializeCamera();
 while (!Raylib.WindowShouldClose())
 {
     //Logik
+    if (Global.currentscene != "death" && Global.currentscene != "start")
+    {
+        levelDied = Global.currentscene;
+    }
+
     switch (Global.currentscene)
     {
         case "start":
@@ -47,29 +55,29 @@ while (!Raylib.WindowShouldClose())
             break;
 
         case "levelOne":
-            levelDied = "levelOne";
             c.CameraBounds();
             if (!levelOne.wonLevel) { p.lastleft = p.Movement(p.lastleft, currentLevel); }
-            p.DeathCheck();
+            p.DeathCheck(currentObstacles);
 
             levelOne.NextLevel("levelTwo");
             if (levelOne.wonLevel)
             {
                 currentLevel = levelOne.nextLevel;
+                currentObstacles = obsOne.nextObstacle;
             }
             break;
 
         case "levelTwo":
-            levelDied = "levelTwo";
             levelTwo.alphaReset();
             c.CameraBounds();
             if (!levelTwo.wonLevel) { p.lastleft = p.Movement(p.lastleft, currentLevel); }
-            p.DeathCheck();
+            p.DeathCheck(currentObstacles);
 
             levelTwo.NextLevel("levelThree");
             if (levelTwo.wonLevel)
             {
                 currentLevel = levelTwo.nextLevel;
+                currentObstacles = obsTwo.nextObstacle;
             }
             break;
     }
@@ -93,12 +101,13 @@ while (!Raylib.WindowShouldClose())
         case "levelOne":
             Raylib.BeginMode2D(c.c);
             levelOne.DrawTextures();
+            obsOne.DrawSpikes();
             Raylib.DrawText("Welcome to Jumpman!", 30, 375, 40, Color.BLACK);
             Raylib.DrawText("Get to the gate at the end of the level to win", 700, 375, 40, Color.BLACK);
             Raylib.DrawText("Press enter when at", 2100, 400, 40, Color.GREEN);
             Raylib.DrawText("the gate to continue", 2100, 450, 40, Color.GREEN);
             Raylib.DrawText("Don't fall down!", 2100, 600, 40, Color.GREEN);
-            p.DrawCharacter(ref frame, ref elapsed, p.rect, p.lastleft);
+            p.DrawCharacter(ref p.frame, ref p.elapsed, p.rect, p.lastleft);
             Raylib.EndMode2D();
             Raylib.DrawText("Level: 1", 5, 5, 30, Color.RED);
             Raylib.DrawFPS(950, 5);
@@ -107,9 +116,12 @@ while (!Raylib.WindowShouldClose())
         case "levelTwo":
             Raylib.BeginMode2D(c.c);
             levelTwo.DrawTextures();
-            p.DrawCharacter(ref frame, ref elapsed, p.rect, p.lastleft);
+            obsTwo.DrawSpikes();
+            Raylib.DrawText("Watch out for spikes!", 405, 375, 40, Color.BLACK);
+            p.DrawCharacter(ref p.frame, ref p.elapsed, p.rect, p.lastleft);
             Raylib.EndMode2D();
             Raylib.DrawText("Level: 2", 5, 5, 30, Color.RED);
+            Raylib.DrawFPS(950, 5);
             break;
     }
     Raylib.EndDrawing();

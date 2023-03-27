@@ -9,6 +9,8 @@ public class Player
     public bool collidesWithFloor = false;
     public bool lastleft = false;
     public float verticalVelocity = 0f;
+    public int frame = 1;
+    public float elapsed = 0;
     public Player()
     {
         sprites.Add(Raylib.LoadTexture("Sprites/character.png"));
@@ -118,9 +120,15 @@ public class Player
         }
     }
 
-    public void DeathCheck(){
+    public void DeathCheck(Obstacle levelObstacles){
         if (rect.y > Global.screenheight){
             Global.currentscene = "death";
+        }
+        foreach (var spike in levelObstacles.spikes)
+        {
+            if (Raylib.CheckCollisionRecs(rect, spike)){
+                Global.currentscene = "death";
+            }
         }
     }
 }

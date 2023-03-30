@@ -7,7 +7,7 @@ public class Camera
     Player p;
     public Camera(Player pExtern)
     {
-        p = pExtern;
+        p = pExtern; //Gör så att instansen av player blir samma som i program.cs
     }
     public Camera2D c = new();
     public void InitializeCamera()
@@ -16,7 +16,7 @@ public class Camera
         c.rotation = 0;
         c.offset = new Vector2(Global.screenwidth / 2, Global.screenheight / 2);
     }
-    public void CameraBounds()
+    public void CameraBounds() //Gör så att kameran bara följer efter spelaren efter den passerat en viss punkt vilket gör det snyggare
     {
         if (p.rect.x >= 265)
         {

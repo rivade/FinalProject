@@ -5,13 +5,15 @@ using System.Numerics;
 public class Player
 {
     public List<Texture2D> sprites = new();
-    public Rectangle rect = new Rectangle(0, 0, 50, 75);
+    public Rectangle rect = new Rectangle(0, 100, 50, 75);
     public bool collidesWithFloor = false;
     public bool lastleft = false; //Lastleft används för att veta åt vilket håll den ska rita ut spriten
     public float verticalVelocity = 0f; //Spelarens gravitation
     public int frame = 1;
     public float elapsed = 0;
     public int coins = 0;
+    public Sound jumpSound = Raylib.LoadSound("Sounds/jump.wav");
+    public Sound deathSound = Raylib.LoadSound("Sounds/death.mp3");
     public Player()
     {
         sprites.Add(Raylib.LoadTexture("Sprites/character.png"));
@@ -21,12 +23,12 @@ public class Player
 
     public bool Movement(bool lastleft, Level currentLevel) //currentlevel gör så att man kallar den instans av level som används just då i program.cs
     {
-        if (Raylib.IsKeyDown(KeyboardKey.KEY_A) && rect.x > 0) //Gör så att spelaren går vänster men inte kan gå ut ur skärmen
+        if ((Raylib.IsKeyDown(KeyboardKey.KEY_A) || Raylib.IsKeyDown(KeyboardKey.KEY_LEFT)) && rect.x > 0) //Gör så att spelaren går vänster men inte kan gå ut ur skärmen
         {
             rect.x -= 5;
             lastleft = true;
         }
-        if (Raylib.IsKeyDown(KeyboardKey.KEY_D))
+        if (Raylib.IsKeyDown(KeyboardKey.KEY_D) || Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT))
         {
             rect.x += 5;
             lastleft = false;
@@ -43,9 +45,10 @@ public class Player
                     rect.y = 526; 
                 }
 
-                if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE)) //Gör gravitationen "negativ" när man trycker på space vilket gör att man hoppar
+                if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE) || Raylib.IsKeyDown(KeyboardKey.KEY_UP)) //Gör gravitationen "negativ" när man trycker på space/uppåtpil vilket gör att man hoppar
                 {
                     verticalVelocity = 10f;
+                    Raylib.PlaySound(jumpSound);
                 }
                 else
                 {
@@ -78,13 +81,13 @@ public class Player
     public void DrawCharacter(ref int frame, ref float timer, Rectangle player, bool lastLeft) //Ritar ut spelaren
     {
         Rectangle sourcerec = new Rectangle(); //Används för att programmet ska veta vilken del av spritesheeten som ska ritas
-        if (Raylib.IsKeyDown(KeyboardKey.KEY_D) && collidesWithFloor) //Gör så att animationen bara visas när man rör sig och nuddar golvet
+        if ((Raylib.IsKeyDown(KeyboardKey.KEY_D) || Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT)) && collidesWithFloor) //Gör så att animationen bara visas när man rör sig och nuddar golvet
         {
             frame = RunningLogic(ref frame, ref timer);
             sourcerec = new Rectangle(50 * frame, 0, 50, 75); //Definerar sourcerec baserat på frame
             Raylib.DrawTextureRec(sprites[1], sourcerec, new Vector2(player.x, player.y), Color.WHITE);
         }
-        else if (Raylib.IsKeyDown(KeyboardKey.KEY_A) && collidesWithFloor)
+        else if ((Raylib.IsKeyDown(KeyboardKey.KEY_A) || Raylib.IsKeyDown(KeyboardKey.KEY_LEFT)) && collidesWithFloor)
         {
             frame = RunningLogic(ref frame, ref timer);
             sourcerec = new Rectangle(50 * frame, 0, -50, 75); //-50 bredd gör att spriten ritas ut spegelvänt när spelaren går åt andra hållet
@@ -122,11 +125,13 @@ public class Player
     public void DeathCheck(Obstacle levelObstacles){
         if (rect.y > Global.screenheight){
             Global.currentscene = "death"; //Gör så att currentscene blir death när man faller ut från skärmen
+            Raylib.PlaySound(deathSound);
         }
         foreach (var spike in levelObstacles.spikes) //Kollar collisions mellan spelaren och varje spike i leveln.
         {
             if (Raylib.CheckCollisionRecs(rect, spike)){
                 Global.currentscene = "death";
+                Raylib.PlaySound(deathSound);
             }
         }
     }

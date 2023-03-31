@@ -11,7 +11,7 @@ public class Obstacle
     {
         for (var i = 0; i < spike.Length; i++)
         {
-            spikes.Add(new Rectangle(spike[i].X, spike[i].Y, 50, 65)); //Skapar en spike rektangel för varje vector2 man skapar i program.cs när man skapar klassinstansen (lägger in dem i listan spikes också)
+            spikes.Add(new Rectangle((spike[i].X + 5), spike[i].Y, 40, 65)); //Skapar en spike rektangel för varje vector2 man skapar i program.cs när man skapar klassinstansen (lägger in dem i listan spikes också)
         }
     }
 
@@ -19,7 +19,7 @@ public class Obstacle
     {
         foreach (var spike in spikes)
         {
-            Raylib.DrawTexture(spikeTexture, (int)spike.x, (int)spike.y, Color.WHITE); //Ritar ut spike texturen för varje spike i listan spikes
+            Raylib.DrawTexture(spikeTexture, ((int)spike.x - 5), (int)spike.y, Color.WHITE); //Ritar ut spike texturen för varje spike i listan spikes
         }
     }
 }

@@ -2,27 +2,31 @@
 using System.Numerics;
 
 Raylib.InitWindow(Global.screenwidth, Global.screenheight, "Jumpman!");
+Raylib.InitAudioDevice();
 Raylib.SetTargetFPS(60);
+Raylib.SetMasterVolume(1);
 
 Player p = new Player();
 UI u = new UI();
 Camera c = new Camera(p); //Skapar en instans av kameraklassen med instansen av Player som program.cs använder
 
 Level levelOne = new Level(2, 1938, false, p, new Vector2[] //Skapar en instans av Level klassen med valdra presets för antal golv, etc.
-{new Vector2(500, 500), new Vector2(600, 500)}); //Coin positioner
+{new Vector2(1030, 550), new Vector2(1130, 550), new Vector2(1230, 550)}); //Coin positioner
 
-Level levelTwo = new Level(2, 1938, true, p, new Vector2[] 
-{ });
+Level levelTwo = new Level(3, 1938, true, p, new Vector2[]
+{new Vector2(2650, 550), new Vector2(2700, 550), new Vector2(2750, 550), new Vector2(2650, 500), new Vector2(2700, 500), new Vector2(2750, 500)});
 
-Level levelThree = new Level(3, 1938, true, p, new Vector2[] 
+Level levelThree = new Level(3, 1938, true, p, new Vector2[]
 { });
 
 Obstacle obsOne = new Obstacle(new Vector2[] { });
-Obstacle obsTwo = new Obstacle(new Vector2[] { new Vector2(400, 535), new Vector2(600, 535), new Vector2(800, 535), new Vector2(1200, 535), new Vector2(1250, 535), new Vector2(1300, 535) }); //Positioner för taggar i level 2
+Obstacle obsTwo = new Obstacle(new Vector2[] { new Vector2(400, 535), new Vector2(600, 535), new Vector2(800, 535), new Vector2(1200, 535), new Vector2(1250, 535), new Vector2(1300, 535), new Vector2(2200, 535), new Vector2(2250, 535), new Vector2(2300, 535), new Vector2(2450, 535), new Vector2(2500, 535), new Vector2(2550, 535), new Vector2(3022, 535), new Vector2(2972, 535), new Vector2(2922, 535), new Vector2(2872, 535), new Vector2(2822, 535) }); //Positioner för taggar i level 2
+Obstacle obsThree = new Obstacle(new Vector2[] { });
 
 levelOne.nextLevel = levelTwo; //Definerar vilken instans av level som ska användas när man klarar en level
 levelTwo.nextLevel = levelThree;
 obsOne.nextObstacle = obsTwo;
+obsTwo.nextObstacle = obsThree;
 
 Level currentLevel = levelOne;
 Obstacle currentObstacles = obsOne;
@@ -56,7 +60,7 @@ while (!Raylib.WindowShouldClose())
             if (deathTimer == 0)
             {
                 p.rect.x = 0;
-                p.rect.y = 0;
+                p.rect.y = 100;
                 p.verticalVelocity = 0f;
                 Global.currentscene = levelDied;
                 deathTimer = 300;
@@ -121,7 +125,7 @@ while (!Raylib.WindowShouldClose())
             levelOne.DrawCoin(ref levelOne.frame, ref levelOne.elapsed); //Ritar ut coins
             Raylib.EndMode2D();
             Raylib.DrawTexture(infoSign, 0, 0, Color.WHITE);
-            Raylib.DrawText("Level: 1", 30, 10, 30, Color.RED);
+            Raylib.DrawText("Level: 1", 25, 10, 30, Color.RED);
             Raylib.DrawTexture(invCoinTexture, 35, 50, Color.WHITE);
             Raylib.DrawText($": {p.coins}", 75, 50, 35, Color.BLACK);
             Raylib.DrawFPS(950, 5);
@@ -136,7 +140,7 @@ while (!Raylib.WindowShouldClose())
             levelTwo.DrawCoin(ref levelOne.frame, ref levelOne.elapsed);
             Raylib.EndMode2D();
             Raylib.DrawTexture(infoSign, 0, 0, Color.WHITE);
-            Raylib.DrawText("Level: 2", 30, 10, 30, Color.RED);
+            Raylib.DrawText("Level: 2", 25, 10, 30, Color.RED);
             Raylib.DrawTexture(invCoinTexture, 35, 50, Color.WHITE);
             Raylib.DrawText($": {p.coins}", 75, 50, 35, Color.BLACK);
             Raylib.DrawFPS(950, 5);

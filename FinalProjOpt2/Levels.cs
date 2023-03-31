@@ -16,6 +16,7 @@ public class Level
     public List<Rectangle> coins = new();
     public Rectangle gate;
     public Texture2D coinTexture = Raylib.LoadTexture("Textures/coin.png");
+    public Sound coinSound = Raylib.LoadSound("Sounds/coin.mp3");
     public int frame = 1;
     public float elapsed = 0;
     public bool wonLevel = false;
@@ -97,6 +98,7 @@ public class Level
             {
                 p.coins++; //Lägger till en coin till hur många spelaren plockat upp
                 coins.Remove(coins[i]); //Tar bort coinen från leveln så att man ej kan plocka upp samma coin flera gånger
+                Raylib.PlaySound(coinSound);
             }
         }
     }

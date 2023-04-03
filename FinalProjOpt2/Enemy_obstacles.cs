@@ -7,7 +7,7 @@ public class Obstacle
     public Obstacle nextObstacle;
     public List<Rectangle> spikes = new();
     public Texture2D spikeTexture = Raylib.LoadTexture("Textures/spike.png");
-    public Obstacle(Vector2[] spike) //Vector2 så att den vet vilka koordinater den ska skapa rektangeln för
+    public Obstacle(Vector2[] spike) //Vector2 används för att ange spikens koordinater
     {
         for (var i = 0; i < spike.Length; i++)
         {

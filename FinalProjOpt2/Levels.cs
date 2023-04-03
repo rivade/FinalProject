@@ -105,7 +105,7 @@ public class Level
 
     public int CoinFrameLogic(ref int frame, ref float elapsed) //Samma som när spelarens running animation ska ritas bara med längre frame duration
     {
-        const float frameDuration = 0.12f;
+        const float frameDuration = 0.15f;
         elapsed += Raylib.GetFrameTime();
         if (elapsed >= frameDuration)
         {

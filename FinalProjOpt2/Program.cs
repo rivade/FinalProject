@@ -16,12 +16,12 @@ Level levelOne = new Level(2, 1938, false, p, new Vector2[] //Skapar en instans 
 Level levelTwo = new Level(3, 1938, true, p, new Vector2[]
 {new Vector2(2650, 550), new Vector2(2700, 550), new Vector2(2750, 550), new Vector2(2650, 500), new Vector2(2700, 500), new Vector2(2750, 500)});
 
-Level levelThree = new Level(3, 1938, true, p, new Vector2[]
+Level levelThree = new Level(3, 2962, true, p, new Vector2[]
 { });
 
 Obstacle obsOne = new Obstacle(new Vector2[] { });
 Obstacle obsTwo = new Obstacle(new Vector2[] { new Vector2(400, 535), new Vector2(600, 535), new Vector2(800, 535), new Vector2(1200, 535), new Vector2(1250, 535), new Vector2(1300, 535), new Vector2(2200, 535), new Vector2(2250, 535), new Vector2(2300, 535), new Vector2(2450, 535), new Vector2(2500, 535), new Vector2(2550, 535), new Vector2(3022, 535), new Vector2(2972, 535), new Vector2(2922, 535), new Vector2(2872, 535), new Vector2(2822, 535) }); //Positioner för taggar i level 2
-Obstacle obsThree = new Obstacle(new Vector2[] { });
+Obstacle obsThree = new Obstacle(new Vector2[] { new Vector2() });
 
 levelOne.nextLevel = levelTwo; //Definerar vilken instans av level som ska användas när man klarar en level
 levelTwo.nextLevel = levelThree;
@@ -53,17 +53,33 @@ while (!Raylib.WindowShouldClose())
             break;
 
         case "death":
-            if (deathTimer > 0)
+            if (p.hearts > 0)
             {
-                deathTimer--;
+                if (deathTimer > 0)
+                {
+                    deathTimer--;
+                }
+                if (deathTimer == 0)
+                {
+                    p.rect.x = 0;
+                    p.rect.y = 100;
+                    p.verticalVelocity = 0f;
+                    Global.currentscene = levelDied;
+                    deathTimer = 300;
+                }
             }
-            if (deathTimer == 0)
+            else
             {
-                p.rect.x = 0;
-                p.rect.y = 100;
-                p.verticalVelocity = 0f;
-                Global.currentscene = levelDied;
-                deathTimer = 300;
+                if (Raylib.IsKeyPressed(KeyboardKey.KEY_ENTER))
+                {
+                    Global.currentscene = "start";
+                    p.rect.x = 0;
+                    p.rect.y = 100;
+                    p.hearts = 3;
+                    currentLevel = levelOne;
+                    levelOne.wonLevel = false;
+                    levelTwo.wonLevel = false;
+                }
             }
             break;
 
@@ -95,6 +111,16 @@ while (!Raylib.WindowShouldClose())
                 currentObstacles = obsTwo.nextObstacle;
             }
             break;
+
+        case "levelThree":
+            levelThree.alphaReset();
+            c.CameraBounds();
+            if (!levelThree.wonLevel) { p.lastleft = p.Movement(p.lastleft, currentLevel); }
+            p.DeathCheck(currentObstacles);
+            levelThree.CoinCollection();
+
+            levelThree.NextLevel("levelFour");
+            break;
     }
 
     //Grafik
@@ -109,8 +135,16 @@ while (!Raylib.WindowShouldClose())
             break;
 
         case "death":
-            Raylib.DrawText("You died!", 300, 400, 40, Color.RED);
-            Raylib.DrawText($"Respawning in: {deathTimer / 60 + 1}", 400, 500, 40, Color.RED);
+            if (p.hearts > 0)
+            {
+                Raylib.DrawText("You died!", 300, 400, 40, Color.RED);
+                Raylib.DrawText($"Respawning in: {deathTimer / 60 + 1}", 400, 500, 40, Color.RED);
+            }
+            else
+            {
+                Raylib.DrawText("You lost!", 300, 400, 40, Color.RED);
+                Raylib.DrawText("Press enter to restart!", 400, 500, 40, Color.RED);
+            }
             break;
 
         case "levelOne":
@@ -128,7 +162,7 @@ while (!Raylib.WindowShouldClose())
             Raylib.DrawText("Level: 1", 25, 10, 30, Color.RED);
             Raylib.DrawTexture(invCoinTexture, 35, 50, Color.WHITE);
             Raylib.DrawText($": {p.coins}", 75, 50, 35, Color.BLACK);
-            Raylib.DrawFPS(950, 5);
+            p.DrawHearts();
             break;
 
         case "levelTwo":
@@ -137,13 +171,27 @@ while (!Raylib.WindowShouldClose())
             obsTwo.DrawSpikes();
             Raylib.DrawText("Watch out for spikes!", 405, 375, 40, Color.BLACK);
             p.DrawCharacter(ref p.frame, ref p.elapsed, p.rect, p.lastleft);
-            levelTwo.DrawCoin(ref levelOne.frame, ref levelOne.elapsed);
+            levelTwo.DrawCoin(ref levelTwo.frame, ref levelTwo.elapsed);
             Raylib.EndMode2D();
             Raylib.DrawTexture(infoSign, 0, 0, Color.WHITE);
             Raylib.DrawText("Level: 2", 25, 10, 30, Color.RED);
             Raylib.DrawTexture(invCoinTexture, 35, 50, Color.WHITE);
             Raylib.DrawText($": {p.coins}", 75, 50, 35, Color.BLACK);
-            Raylib.DrawFPS(950, 5);
+            p.DrawHearts();
+            break;
+
+        case "levelThree":
+            Raylib.BeginMode2D(c.c);
+            levelThree.DrawTextures();
+            obsThree.DrawSpikes();
+            p.DrawCharacter(ref p.frame, ref p.elapsed, p.rect, p.lastleft);
+            levelThree.DrawCoin(ref levelThree.frame, ref levelThree.elapsed);
+            Raylib.EndMode2D();
+            Raylib.DrawTexture(infoSign, 0, 0, Color.WHITE);
+            Raylib.DrawText("Level: 3", 25, 10, 30, Color.RED);
+            Raylib.DrawTexture(invCoinTexture, 35, 50, Color.WHITE);
+            Raylib.DrawText($": {p.coins}", 75, 50, 35, Color.BLACK);
+            p.DrawHearts();
             break;
     }
     Raylib.EndDrawing();

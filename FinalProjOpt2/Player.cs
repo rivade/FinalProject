@@ -1,19 +1,23 @@
 using System;
 using Raylib_cs;
 using System.Numerics;
-
 public class Player
 {
+    Random generator = new();
     public List<Texture2D> sprites = new();
     public Rectangle rect = new Rectangle(0, 100, 50, 75);
     public bool collidesWithFloor = false;
     public bool lastleft = false; //Lastleft används för att veta åt vilket håll den ska rita ut spriten
     public float verticalVelocity = 0f; //Spelarens gravitation
     public int frame = 1;
+    public int hearts = 3;
     public float elapsed = 0;
     public int coins = 0;
+    public Texture2D heart = Raylib.LoadTexture("Textures/heart.png");
+    public Texture2D emptyheart = Raylib.LoadTexture("Textures/emptyheart.png");
     public Sound jumpSound = Raylib.LoadSound("Sounds/jump.wav");
     public Sound deathSound = Raylib.LoadSound("Sounds/death.mp3");
+    public Sound deathSound2 = Raylib.LoadSound("Sounds/death2.mp3");
     public Player()
     {
         sprites.Add(Raylib.LoadTexture("Sprites/character.png"));
@@ -45,7 +49,7 @@ public class Player
                     rect.y = 526; 
                 }
 
-                if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE) || Raylib.IsKeyDown(KeyboardKey.KEY_UP)) //Gör gravitationen "negativ" när man trycker på space/uppåtpil vilket gör att man hoppar
+                if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE) || Raylib.IsKeyPressed(KeyboardKey.KEY_UP)) //Gör gravitationen "negativ" när man trycker på space/uppåtpil vilket gör att man hoppar
                 {
                     verticalVelocity = 10f;
                     Raylib.PlaySound(jumpSound);
@@ -126,13 +130,33 @@ public class Player
         if (rect.y > Global.screenheight){
             Global.currentscene = "death"; //Gör så att currentscene blir death när man faller ut från skärmen
             Raylib.PlaySound(deathSound);
+            hearts--;
         }
         foreach (var spike in levelObstacles.spikes) //Kollar collisions mellan spelaren och varje spike i leveln.
         {
             if (Raylib.CheckCollisionRecs(rect, spike)){
                 Global.currentscene = "death";
-                Raylib.PlaySound(deathSound);
+                int selection = generator.Next(0, 2);
+                if (selection == 1){
+                    Raylib.PlaySound(deathSound);
+                }
+                else{
+                    Raylib.PlaySound(deathSound2);
+                }
+                hearts--;
             }
+        }
+    }
+
+    public void DrawHearts()
+    {
+        for (var i = 0; i < 3; i++)
+        {
+            Raylib.DrawTexture(emptyheart, (i*63 + 835), 5, Color.WHITE);
+        }
+        for (var i = 0; i < hearts; i++) //Gör så att den ritar ut ett hjärta ovanpå den tomma texturen för varje liv man har
+        {
+            Raylib.DrawTexture(heart, (i*63 + 835), 5, Color.WHITE);
         }
     }
 }

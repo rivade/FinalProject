@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Raylib-cs" Version="4.2.0.2" />
+    <Reference Include="System.Windows.Forms" Version="4.0.0.0" />
   </ItemGroup>
 
 </Project>

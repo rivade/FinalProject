@@ -15,9 +15,6 @@ public class Player
     public int coins = 0;
     public Texture2D heart = Raylib.LoadTexture("Textures/heart.png");
     public Texture2D emptyheart = Raylib.LoadTexture("Textures/emptyheart.png");
-    public Sound jumpSound = Raylib.LoadSound("Sounds/jump.wav");
-    public Sound deathSound = Raylib.LoadSound("Sounds/death.mp3");
-    public Sound deathSound2 = Raylib.LoadSound("Sounds/death2.mp3");
     public Player()
     {
         sprites.Add(Raylib.LoadTexture("Sprites/character.png"));
@@ -46,13 +43,13 @@ public class Player
                 collidesWithFloor = true;
                 if (rect.y + 75 > 600) //Återställer spelarens position till y värdet precis vid golvet för att förhindra att man faller igenom golvet.
                 {
-                    rect.y = 526; 
+                    rect.y = 526;
                 }
 
                 if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE) || Raylib.IsKeyPressed(KeyboardKey.KEY_UP)) //Gör gravitationen "negativ" när man trycker på space/uppåtpil vilket gör att man hoppar
                 {
                     verticalVelocity = 10f;
-                    Raylib.PlaySound(jumpSound);
+                    Raylib.PlaySound(Global.jumpSound);
                 }
                 else
                 {
@@ -73,7 +70,7 @@ public class Player
     {
         const float frameDuration = 0.07f; //Hur länge varje frame ska visas
         elapsed += Raylib.GetFrameTime(); //Hur lång tid som gått sen framen byttes
-        if (elapsed >= frameDuration) 
+        if (elapsed >= frameDuration)
         {
             frame++; //Ökar framen av spritesheeten när den visats så länge som frameduration anger
             elapsed -= frameDuration; //Återställer visningstiden till nästa frame
@@ -126,24 +123,22 @@ public class Player
         }
     }
 
-    public void DeathCheck(Obstacle levelObstacles){
-        if (rect.y > Global.screenheight){
+    public void DeathCheck(Obstacle levelObstacles)
+    {
+        if (rect.y > Global.screenheight)
+        {
             Global.currentscene = "death"; //Gör så att currentscene blir death när man faller ut från skärmen
-            Raylib.PlaySound(deathSound);
+            Raylib.PlaySound(Global.deathSound);
             hearts--;
         }
         foreach (var spike in levelObstacles.spikes) //Kollar collisions mellan spelaren och varje spike i leveln.
         {
-            if (Raylib.CheckCollisionRecs(rect, spike)){
+            if (Raylib.CheckCollisionRecs(rect, spike))
+            {
                 Global.currentscene = "death";
-                int selection = generator.Next(0, 2);
-                if (selection == 1){
-                    Raylib.PlaySound(deathSound);
-                }
-                else{
-                    Raylib.PlaySound(deathSound2);
-                }
+                Raylib.PlaySound(Global.deathSound);
                 hearts--;
+                break;
             }
         }
     }
@@ -152,11 +147,11 @@ public class Player
     {
         for (var i = 0; i < 3; i++)
         {
-            Raylib.DrawTexture(emptyheart, (i*63 + 835), 5, Color.WHITE);
+            Raylib.DrawTexture(emptyheart, (i * 63 + 835), 5, Color.WHITE);
         }
         for (var i = 0; i < hearts; i++) //Gör så att den ritar ut ett hjärta ovanpå den tomma texturen för varje liv man har
         {
-            Raylib.DrawTexture(heart, (i*63 + 835), 5, Color.WHITE);
+            Raylib.DrawTexture(heart, (i * 63 + 835), 5, Color.WHITE);
         }
     }
 }

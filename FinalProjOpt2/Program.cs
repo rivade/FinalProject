@@ -17,30 +17,32 @@ Level levelTwo = new Level(3, 1938, true, p, new Vector2[]
 {new Vector2(2650, 550), new Vector2(2700, 550), new Vector2(2750, 550), new Vector2(2650, 500), new Vector2(2700, 500), new Vector2(2750, 500)});
 
 Level levelThree = new Level(3, 2962, true, p, new Vector2[]
-{ });
+{ new Vector2(410, 450), new Vector2(460, 450), new Vector2(510, 450), new Vector2(560, 450), new Vector2(710, 450), new Vector2(760, 450), new Vector2(810, 450), new Vector2(860, 450), new Vector2(1010, 450), new Vector2(1060, 450), new Vector2(1110, 450), new Vector2(1160, 450), new Vector2(1310, 450), new Vector2(1360, 450), new Vector2(1410, 450), new Vector2(1460, 450) });
 
 Obstacle obsOne = new Obstacle(new Vector2[] { });
 Obstacle obsTwo = new Obstacle(new Vector2[] { new Vector2(400, 535), new Vector2(600, 535), new Vector2(800, 535), new Vector2(1200, 535), new Vector2(1250, 535), new Vector2(1300, 535), new Vector2(2200, 535), new Vector2(2250, 535), new Vector2(2300, 535), new Vector2(2450, 535), new Vector2(2500, 535), new Vector2(2550, 535), new Vector2(3022, 535), new Vector2(2972, 535), new Vector2(2922, 535), new Vector2(2872, 535), new Vector2(2822, 535) }); //Positioner för taggar i level 2
-Obstacle obsThree = new Obstacle(new Vector2[] { new Vector2() });
+Obstacle obsThree = new Obstacle(new Vector2[] { new Vector2(400, 535), new Vector2(450, 535), new Vector2(500, 535), new Vector2(550, 535), new Vector2(700, 535), new Vector2(750, 535), new Vector2(800, 535), new Vector2(850, 535), new Vector2(1000, 535), new Vector2(1050, 535), new Vector2(1100, 535), new Vector2(1150, 535), new Vector2(1300, 535), new Vector2(1350, 535), new Vector2(1400, 535), new Vector2(1450, 535) });
 
 levelOne.nextLevel = levelTwo; //Definerar vilken instans av level som ska användas när man klarar en level
 levelTwo.nextLevel = levelThree;
-obsOne.nextObstacle = obsTwo;
+obsOne.nextObstacle = obsTwo; //Definerar vilken instans av obstacle som ska användas när man klarar en level
 obsTwo.nextObstacle = obsThree;
 
 Level currentLevel = levelOne;
 Obstacle currentObstacles = obsOne;
 
 string levelDied = "";
-int deathTimer = 300;
+int deathTimer = 180;
 Texture2D invCoinTexture = Raylib.LoadTexture("Textures/invcoin.png");
 Texture2D infoSign = Raylib.LoadTexture("Textures/infosign.png");
 
 c.InitializeCamera(); //Initierar kamerainställningar i klassen camera
+Global.SoundInitialization();
 
 while (!Raylib.WindowShouldClose())
 {
     //Logik
+    Raylib.UpdateMusicStream(Global.music);
     if (Global.currentscene != "death" && Global.currentscene != "start")
     {
         levelDied = Global.currentscene; //Avgör var man ska respawna ifall man dör
@@ -53,6 +55,7 @@ while (!Raylib.WindowShouldClose())
             break;
 
         case "death":
+            Raylib.PauseMusicStream(Global.music);
             if (p.hearts > 0)
             {
                 if (deathTimer > 0)
@@ -65,25 +68,34 @@ while (!Raylib.WindowShouldClose())
                     p.rect.y = 100;
                     p.verticalVelocity = 0f;
                     Global.currentscene = levelDied;
-                    deathTimer = 300;
+                    deathTimer = 180;
+                    Raylib.ResumeMusicStream(Global.music);
                 }
             }
             else
             {
                 if (Raylib.IsKeyPressed(KeyboardKey.KEY_ENTER))
                 {
+                    Raylib.StopMusicStream(Global.music);
                     Global.currentscene = "start";
                     p.rect.x = 0;
                     p.rect.y = 100;
                     p.hearts = 3;
+                    p.coins = 0;
                     currentLevel = levelOne;
+                    currentObstacles = obsOne;
                     levelOne.wonLevel = false;
                     levelTwo.wonLevel = false;
+                    levelThree.wonLevel = false;
+                    levelOne.ResetCoins();
+                    levelTwo.ResetCoins();
+                    levelThree.ResetCoins();
                 }
             }
             break;
 
         case "levelOne":
+            levelOne.alphaReset();
             c.CameraBounds();
             if (!levelOne.wonLevel) { p.lastleft = p.Movement(p.lastleft, currentLevel); } //Gör så att man kan röra sig ifall man inte klarat leveln
             p.DeathCheck(currentObstacles); //Kollar ifall spelaren dött
@@ -119,7 +131,7 @@ while (!Raylib.WindowShouldClose())
             p.DeathCheck(currentObstacles);
             levelThree.CoinCollection();
 
-            levelThree.NextLevel("levelFour");
+            levelThree.NextLevel("win");
             break;
     }
 
@@ -129,7 +141,8 @@ while (!Raylib.WindowShouldClose())
     switch (Global.currentscene)
     {
         case "start":
-            Raylib.DrawText("Jumpman!", 350, 320, 75, Color.RED);
+            Raylib.DrawTexture(u.startBG, 0, 0, Color.WHITE);
+            Raylib.DrawText("Jumpman!", 350, 250, 75, Color.RED);
             Raylib.DrawRectangleRec(u.button, u.buttoncolor);
             Raylib.DrawText("START", 442, 453, 40, Color.RED);
             break;

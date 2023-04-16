@@ -16,10 +16,10 @@ public class Level
     public List<Rectangle> coins = new();
     public Rectangle gate;
     public Texture2D coinTexture = Raylib.LoadTexture("Textures/coin.png");
-    public Sound coinSound = Raylib.LoadSound("Sounds/coin.mp3");
     public int frame = 1;
     public float elapsed = 0;
     public bool wonLevel = false;
+    private Vector2[] coinpositions;
     public Level(int count, int gateX, bool resetAlpha, Player pExtern, Vector2[] coinpos)
     {
         Rectangle gatecreator = new(gateX, 490, 110, 110); //Skapar en gate rektangel där man anger vart gaten ska ligga (konstant y, men x bestäms när instansen av klassen skapas)
@@ -38,6 +38,7 @@ public class Level
         assetTextures.Add(Raylib.LoadTexture("Textures/gate.png"));
         gate = gatecreator; //Gör så att klassens gate rektangel får de värden man anger
         p = pExtern;
+        coinpositions = coinpos;
         if (resetAlpha) //Gör så att den återställer alphavärdet på svarta skärmen ifall banan har bytts.
         {
             alpha.a = 254;
@@ -66,6 +67,8 @@ public class Level
     {
         if (Raylib.CheckCollisionRecs(p.rect, gate) && Raylib.IsKeyPressed(KeyboardKey.KEY_ENTER))
         {
+            Raylib.PlaySound(Global.winSound);
+            Raylib.PauseMusicStream(Global.music);
             wonLevel = true;
         }
         if (wonLevel)
@@ -78,6 +81,7 @@ public class Level
             {
                 p.rect.x = 265;
                 p.rect.y = 526;
+                Raylib.ResumeMusicStream(Global.music);
                 Global.currentscene = next;
             }
         }
@@ -98,7 +102,7 @@ public class Level
             {
                 p.coins++; //Lägger till en coin till hur många spelaren plockat upp
                 coins.Remove(coins[i]); //Tar bort coinen från leveln så att man ej kan plocka upp samma coin flera gånger
-                Raylib.PlaySound(coinSound);
+                Raylib.PlaySound(Global.coinSound);
             }
         }
     }
@@ -123,6 +127,15 @@ public class Level
         foreach (var coin in coins)
         {
             Raylib.DrawTextureRec(coinTexture, sourcerec, new Vector2(coin.x, coin.y), Color.WHITE);
+        }
+    }
+
+    public void ResetCoins()
+    {
+        coins.Clear();
+        for (var i = 0; i < coinpositions.Length; i++)
+        {
+            coins.Add(new Rectangle(coinpositions[i].X, coinpositions[i].Y, 30, 30)); //Lägger tillbaka coinsen i leveln när man restartat spelet
         }
     }
 }

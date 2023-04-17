@@ -13,12 +13,16 @@ public class Global //Globala variabler som ska kunna användas i flera klasser 
     public static Sound deathSound = Raylib.LoadSound("Sounds/death.mp3");
     public static Sound coinSound = Raylib.LoadSound("Sounds/coin.mp3");
     public static Sound winSound = Raylib.LoadSound("Sounds/win.mp3");
+    public static Sound cheer = Raylib.LoadSound("Sounds/cheer.mp3");
     public static Texture2D invCoinTexture = Raylib.LoadTexture("Textures/invcoin.png");
     public static Texture2D infoSign = Raylib.LoadTexture("Textures/infosign.png");
+    public static Texture2D deathScreen = Raylib.LoadTexture("Textures/deathscreen.png"); 
+    public static Texture2D winScreen = Raylib.LoadTexture("Textures/winscreen.png"); 
     public static void SoundInitialization()
     {
         Raylib.SetSoundVolume(jumpSound, 0.5f);
         Raylib.SetSoundVolume(coinSound, 0.5f);
+        Raylib.SetSoundVolume(cheer, 0.6f);
     }
 }
 

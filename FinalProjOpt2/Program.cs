@@ -103,27 +103,30 @@ while (!Raylib.WindowShouldClose())
             break;
 
         case "death":
+            Raylib.DrawTexture(Global.deathScreen, 0, 0, Color.WHITE);
             if (p.hearts > 0)
             {
-                Raylib.DrawText("You died!", 300, 400, 40, Color.RED);
-                Raylib.DrawText($"Respawning in: {d.deathTimer / 60 + 1}", 400, 500, 40, Color.RED);
+                Raylib.DrawText("You died!", 600, 400, 40, Color.WHITE);
+                Raylib.DrawText($"Respawning in: {d.deathTimer / 60 + 1}", 600, 500, 40, Color.WHITE);
             }
             else
             {
-                Raylib.DrawText("You lost!", 300, 400, 40, Color.RED);
-                Raylib.DrawText("Press enter to restart!", 400, 500, 40, Color.RED);
+                Raylib.DrawText("You lost!", 600, 400, 40, Color.WHITE);
+                Raylib.DrawText("Press enter to restart!", 600, 500, 30, Color.WHITE);
             }
             break;
         
         case "win":
-            Raylib.DrawText("Congratulations, you won!", 0, 0, 50, Color.RED);
-            Raylib.DrawText($"You finished with {p.hearts} lives remaining", 0, 150, 50, Color.RED);
-            Raylib.DrawText($"You collected {p.coins} coins.", 0, 300, 50, Color.RED);
+            Raylib.DrawTexture(Global.winScreen, 0, 0, Color.WHITE);
+            Raylib.DrawText("Congratulations, you won!", 450, 100, 30, Color.BLACK);
+            Raylib.DrawText($"You finished with {p.hearts} lives remaining", 450, 150, 30, Color.BLACK);
+            Raylib.DrawText($"You collected {p.coins} coins.", 450, 200, 30, Color.BLACK);
             if (p.coins == 25)
             {
-                Raylib.DrawText("Thats all of them, good job!", 0, 450, 50, Color.RED);
+                Raylib.DrawText("Thats all of them, good job!", 450, 250, 30, Color.BLACK);
             }
-            Raylib.DrawText("Press enter to restart, or ESC to exit.", 0, 600, 50, Color.RED);
+            Raylib.DrawText("Press enter to restart", 425, 450, 40, Color.BLACK);
+            Raylib.DrawText("Press ESC to exit", 425, 500, 40, Color.BLACK);
 
             break;
 
@@ -131,6 +134,7 @@ while (!Raylib.WindowShouldClose())
             Raylib.BeginMode2D(c.c);
             levelOne.DrawTextures(); //Ritar ut golv och bakgrund
             Raylib.DrawText("Welcome to Jumpman!", 30, 375, 40, Color.BLACK);
+            Raylib.DrawText("Move using W/D/SPACE or the Arrow Keys", 30, 200, 40, Color.BLACK);
             Raylib.DrawText("Get to the gate at the end of the level to win", 700, 375, 40, Color.BLACK);
             Raylib.DrawText("Press enter when at", 2100, 400, 40, Color.GREEN);
             Raylib.DrawText("the gate to continue", 2100, 450, 40, Color.GREEN);

@@ -15,7 +15,6 @@ public class Level
     public List<Texture2D> assetTextures = new();
     public List<Rectangle> coins = new();
     public Rectangle gate;
-    private Sound win = Raylib.LoadSound("Sounds/cheer.mp3");
     public Texture2D coinTexture = Raylib.LoadTexture("Textures/coin.png");
     public int frame = 1;
     public float elapsed = 0;
@@ -86,7 +85,7 @@ public class Level
                 Global.currentscene = next;
                 if (next == "win")
                 {
-                    Raylib.PlaySound(win);
+                    Raylib.PlaySound(Global.cheer);
                 }
             }
         }

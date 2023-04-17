@@ -141,6 +141,16 @@ public class Player
                 break;
             }
         }
+        foreach (var enemy in levelObstacles.enemies)
+        {
+            if (Raylib.CheckCollisionRecs(rect, enemy))
+            {
+                Global.currentscene = "death";
+                Raylib.PlaySound(Global.deathSound);
+                hearts--;
+                break;
+            }
+        }
     }
 
     public void DrawHearts()

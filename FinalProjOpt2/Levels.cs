@@ -57,10 +57,6 @@ public class Level
             Raylib.DrawTexture(floorTextures[0], (int)floors[i].x, (int)floors[i].y, Color.WHITE);
         }
         Raylib.DrawTexture(assetTextures[0], (int)gate.x, (int)gate.y, Color.WHITE);
-        for (var i = 0; i < 20; i++)
-        {
-            Raylib.DrawTexture(backgrounds[2], (i * 1024), 0, alpha);
-        }
     }
 
     public void NextLevel(string next) //Ändrar alpha på svarta skärmen och gör så att man går vidare till nästa level när man trycker på enter vid gaten
@@ -79,7 +75,7 @@ public class Level
             }
             if (alpha.a == 254)
             {
-                p.rect.x = 265;
+                p.rect.x = 0;
                 p.rect.y = 526;
                 Raylib.ResumeMusicStream(Global.music);
                 Global.currentscene = next;

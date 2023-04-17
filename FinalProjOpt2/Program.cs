@@ -69,9 +69,9 @@ while (!Raylib.WindowShouldClose())
             break;
 
         case "levelTwo":
-            levelTwo.alphaReset(); //Återställer alfavärdet på den svarta skärmen vilket gör att skärmen fadear tillbaka från svart
+            levelTwo.alphaReset();
             c.CameraBounds();
-            if (!levelTwo.wonLevel) { p.lastleft = p.Movement(p.lastleft, levelTwo); }
+            if (!levelTwo.wonLevel && (levelTwo.alpha.a < 20)) { p.lastleft = p.Movement(p.lastleft, levelTwo); }
             p.DeathCheck(obsTwo);
             levelTwo.CoinCollection();
 
@@ -81,7 +81,7 @@ while (!Raylib.WindowShouldClose())
         case "levelThree":
             levelThree.alphaReset();
             c.CameraBounds();
-            if (!levelThree.wonLevel) { p.lastleft = p.Movement(p.lastleft, levelThree); }
+            if (!levelThree.wonLevel  && (levelThree.alpha.a < 20)) { p.lastleft = p.Movement(p.lastleft, levelThree); }
             obsThree.MoveEnemy(); //Flyttar på slimesen i bana 3
             p.DeathCheck(obsThree);
             levelThree.CoinCollection();
@@ -147,6 +147,7 @@ while (!Raylib.WindowShouldClose())
             Raylib.DrawTexture(Global.invCoinTexture, 35, 50, Color.WHITE);
             Raylib.DrawText($": {p.coins}", 75, 50, 35, Color.BLACK);
             p.DrawHearts();
+            Raylib.DrawTexture(levelOne.backgrounds[2], 0, 0, levelOne.alpha);
             break;
 
         case "levelTwo":
@@ -162,6 +163,7 @@ while (!Raylib.WindowShouldClose())
             Raylib.DrawTexture(Global.invCoinTexture, 35, 50, Color.WHITE);
             Raylib.DrawText($": {p.coins}", 75, 50, 35, Color.BLACK);
             p.DrawHearts();
+            Raylib.DrawTexture(levelTwo.backgrounds[2], 0, 0, levelTwo.alpha);
             break;
 
         case "levelThree":
@@ -177,8 +179,8 @@ while (!Raylib.WindowShouldClose())
             Raylib.DrawTexture(Global.invCoinTexture, 35, 50, Color.WHITE);
             Raylib.DrawText($": {p.coins}", 75, 50, 35, Color.BLACK);
             p.DrawHearts();
+            Raylib.DrawTexture(levelThree.backgrounds[2], 0, 0, levelThree.alpha);
             break;
     }
     Raylib.EndDrawing();
-    //Console.WriteLine($"{Global.currentscene}");
 }

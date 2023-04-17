@@ -82,7 +82,7 @@ while (!Raylib.WindowShouldClose())
             levelThree.alphaReset();
             c.CameraBounds();
             if (!levelThree.wonLevel) { p.lastleft = p.Movement(p.lastleft, levelThree); }
-            obsThree.MoveEnemy();
+            obsThree.MoveEnemy(); //Flyttar på slimesen i bana 3
             p.DeathCheck(obsThree);
             levelThree.CoinCollection();
 

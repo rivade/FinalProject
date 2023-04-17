@@ -144,3 +144,31 @@ public class Level
         }
     }
 }
+
+public class Death
+{
+    public int deathTimer = 180;
+    public void DeathHandler(Player p, Reset r, Level levelOne, Level levelTwo, Level levelThree)
+    {
+        if (p.hearts > 0)
+        {
+            if (deathTimer > 0)
+            {
+                deathTimer--;
+            }
+            if (deathTimer == 0)
+            {
+                p.rect.x = 0;
+                p.rect.y = 100;
+                p.verticalVelocity = 0f;
+                Global.currentscene = Global.levelDied;
+                deathTimer = 180;
+                Raylib.ResumeMusicStream(Global.music);
+            }
+        }
+        else
+        {
+            r.ResetGame(p, levelOne, levelTwo, levelThree);
+        }
+    }
+}

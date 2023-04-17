@@ -7,11 +7,14 @@ public class Global //Globala variabler som ska kunna användas i flera klasser 
     public static string currentscene = "start";
     public const int screenwidth = 1024;
     public const int screenheight = 768;
+    public static string levelDied = "";
     public static Music music = Raylib.LoadMusicStream("Sounds/bgmusic.mp3");
     public static Sound jumpSound = Raylib.LoadSound("Sounds/jump.mp3");
     public static Sound deathSound = Raylib.LoadSound("Sounds/death.mp3");
     public static Sound coinSound = Raylib.LoadSound("Sounds/coin.mp3");
     public static Sound winSound = Raylib.LoadSound("Sounds/win.mp3");
+    public static Texture2D invCoinTexture = Raylib.LoadTexture("Textures/invcoin.png");
+    public static Texture2D infoSign = Raylib.LoadTexture("Textures/infosign.png");
     public static void SoundInitialization()
     {
         Raylib.SetSoundVolume(jumpSound, 0.5f);
@@ -41,4 +44,28 @@ public class UI //Klass för startskärm som man interagerar med
             buttoncolor.r = (byte)64; buttoncolor.g = (byte)64; buttoncolor.b = (byte)64; //Återställer knappfärgen när musen slutar hovera på knappen
         }
     }
+}
+
+public class Reset
+{
+    public void ResetGame(Player p, Level levelOne, Level levelTwo, Level levelThree)
+{
+    if (Raylib.IsKeyPressed(KeyboardKey.KEY_ENTER))
+    {
+        Raylib.StopMusicStream(Global.music);
+        Global.currentscene = "start";
+        p.rect.x = 0;
+        p.rect.y = 100;
+        p.hearts = 3;
+        p.coins = 0;
+        p.verticalVelocity = 0;
+        levelOne.wonLevel = false;
+        levelTwo.wonLevel = false;
+        levelThree.wonLevel = false;
+        levelOne.ResetCoins();
+        levelTwo.ResetCoins();
+        levelThree.ResetCoins();
+        levelOne.alpha.a = 0;
+    }
+}
 }

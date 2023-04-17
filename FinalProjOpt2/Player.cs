@@ -66,7 +66,7 @@ public class Player
         return lastleft;
     }
 
-    public int RunningLogic(ref int frame, ref float elapsed) //Används för att veta vilken frame av spritesheeten som ska ritas när spelaren springer
+    private int RunningLogic(ref int frame, ref float elapsed) //Används för att veta vilken frame av spritesheeten som ska ritas när spelaren springer
     {
         const float frameDuration = 0.07f; //Hur länge varje frame ska visas
         elapsed += Raylib.GetFrameTime(); //Hur lång tid som gått sen framen byttes

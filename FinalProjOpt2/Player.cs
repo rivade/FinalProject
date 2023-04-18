@@ -5,8 +5,8 @@ public class Player
 {
     Random generator = new();
     public List<Texture2D> sprites = new();
-    public Rectangle rect = new Rectangle(0, 100, 50, 75);
-    public bool collidesWithFloor = false;
+    public Rectangle rect = new Rectangle(0, 526, 50, 75);
+    public bool collidesWithFloor = true;
     public bool lastleft = false; //Lastleft används för att veta åt vilket håll den ska rita ut spriten
     public float verticalVelocity = 0f; //Spelarens gravitation
     public int frame = 1;

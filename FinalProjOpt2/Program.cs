@@ -10,7 +10,9 @@ Player p = new Player();
 UI u = new UI();
 Camera c = new Camera(p); //Skapar en instans av kameraklassen med instansen av Player som program.cs använder
 
-Level levelOne = new Level(2, 1938, false, p, new Vector2[] //Skapar en instans av Level klassen med valdra presets för antal golv, etc.
+Level startMenu = new Level(0, 0, false, p, new Vector2[] {});
+
+Level levelOne = new Level(2, 1938, true, p, new Vector2[] //Skapar en instans av Level klassen med valdra presets för antal golv, etc.
 {new Vector2(1030, 550), new Vector2(1130, 550), new Vector2(1230, 550)}); //Coin positioner
 
 Level levelTwo = new Level(3, 1938, true, p, new Vector2[]
@@ -31,8 +33,7 @@ obsTwo.nextObstacle = obsThree;
 
 c.InitializeCamera(); //Initierar kamerainställningar i klassen camera
 Global.SoundInitialization();
-Reset r = new Reset();
-Death d = new Death();
+
 
 while (!Raylib.WindowShouldClose())
 {
@@ -46,47 +47,48 @@ while (!Raylib.WindowShouldClose())
     switch (Global.currentscene)
     {
         case "start":
-            u.StartButton("levelOne");
+            u.StartButton("levelOne", startMenu);
             break;
 
         case "death":
             Raylib.PauseMusicStream(Global.music);
-            d.DeathHandler(p, r, levelOne, levelTwo, levelThree);
+            Death.DeathHandler(p, levelOne, levelTwo, levelThree, startMenu, u);
             break;
         
         case "win":
             Raylib.PauseMusicStream(Global.music);
-            r.ResetGame(p, levelOne, levelTwo, levelThree);
+            Reset.ResetGame(p, levelOne, levelTwo, levelThree, startMenu, u);
             break;
 
         case "levelOne":
+            levelOne.AlphaReset();
             c.CameraBounds();
-            if (!levelOne.wonLevel) { p.lastleft = p.Movement(p.lastleft, levelOne); } //Gör så att man kan röra sig ifall man inte klarat leveln
+            if (!levelOne.wonLevel && (levelOne.alpha.a < 20)) { p.lastleft = p.Movement(p.lastleft, levelOne); } //Gör så att man kan röra sig ifall man inte klarat leveln och skärmen fadeat tillbaka från svart
             p.DeathCheck(obsOne); //Kollar ifall spelaren dött
             levelOne.CoinCollection(); //Kollar ifall spelaren plockar upp en coin
 
-            levelOne.NextLevel("levelTwo"); //Definerar vilken level som currentscene ska uppdateras till när man vinner
+            levelOne.NextLevel("levelTwo", false); //Definerar vilken level som currentscene ska uppdateras till när man vinner
             break;
 
         case "levelTwo":
-            levelTwo.alphaReset();
+            levelTwo.AlphaReset();
             c.CameraBounds();
             if (!levelTwo.wonLevel && (levelTwo.alpha.a < 20)) { p.lastleft = p.Movement(p.lastleft, levelTwo); }
             p.DeathCheck(obsTwo);
             levelTwo.CoinCollection();
 
-            levelTwo.NextLevel("levelThree");
+            levelTwo.NextLevel("levelThree", false);
             break;
 
         case "levelThree":
-            levelThree.alphaReset();
+            levelThree.AlphaReset();
             c.CameraBounds();
             if (!levelThree.wonLevel  && (levelThree.alpha.a < 20)) { p.lastleft = p.Movement(p.lastleft, levelThree); }
             obsThree.MoveEnemy(); //Flyttar på slimesen i bana 3
             p.DeathCheck(obsThree);
             levelThree.CoinCollection();
 
-            levelThree.NextLevel("win");
+            levelThree.NextLevel("win", false);
             break;
     }
 
@@ -100,18 +102,19 @@ while (!Raylib.WindowShouldClose())
             Raylib.DrawText("Jumpman!", 350, 250, 75, Color.RED);
             Raylib.DrawRectangleRec(u.button, u.buttoncolor);
             Raylib.DrawText("START", 442, 453, 40, Color.RED);
+            Raylib.DrawTexture(startMenu.backgrounds[2], 0, 0, startMenu.alpha);
             break;
 
         case "death":
             Raylib.DrawTexture(Global.deathScreen, 0, 0, Color.WHITE);
             if (p.hearts > 0)
             {
-                Raylib.DrawText("You died!", 600, 400, 40, Color.WHITE);
-                Raylib.DrawText($"Respawning in: {d.deathTimer / 60 + 1}", 600, 500, 40, Color.WHITE);
+                Raylib.DrawText("You died!", 670, 400, 40, Color.WHITE);
+                Raylib.DrawText($"Respawning in: {Death.deathTimer / 60 + 1}", 600, 500, 40, Color.WHITE);
             }
             else
             {
-                Raylib.DrawText("You lost!", 600, 400, 40, Color.WHITE);
+                Raylib.DrawText("You lost!", 670, 400, 40, Color.WHITE);
                 Raylib.DrawText("Press enter to restart!", 600, 500, 30, Color.WHITE);
             }
             break;
@@ -131,10 +134,11 @@ while (!Raylib.WindowShouldClose())
             break;
 
         case "levelOne":
+            levelOne.AlphaReset();
             Raylib.BeginMode2D(c.c);
             levelOne.DrawTextures(); //Ritar ut golv och bakgrund
             Raylib.DrawText("Welcome to Jumpman!", 30, 375, 40, Color.BLACK);
-            Raylib.DrawText("Move using W/D/SPACE or the Arrow Keys", 30, 200, 40, Color.BLACK);
+            Raylib.DrawText("Move using A/D/SPACE or the Arrow Keys", 30, 200, 40, Color.BLACK);
             Raylib.DrawText("Get to the gate at the end of the level to win", 700, 375, 40, Color.BLACK);
             Raylib.DrawText("Press enter when at", 2100, 400, 40, Color.GREEN);
             Raylib.DrawText("the gate to continue", 2100, 450, 40, Color.GREEN);
@@ -171,6 +175,7 @@ while (!Raylib.WindowShouldClose())
             levelThree.DrawTextures();
             obsThree.DrawObstacles();
             Raylib.DrawText("Watch out for slimes!", 1700, 375, 40, Color.BLACK);
+            Raylib.DrawText("Great job!", 2555, 375, 40, Color.BLACK);
             p.DrawCharacter(ref p.frame, ref p.elapsed, p.rect, p.lastleft);
             levelThree.DrawCoin(ref levelThree.frame, ref levelThree.elapsed);
             Raylib.EndMode2D();

@@ -59,7 +59,7 @@ public class Level
         Raylib.DrawTexture(assetTextures[0], (int)gate.x, (int)gate.y, Color.WHITE);
     }
 
-    public void NextLevel(string next) //Ändrar alpha på svarta skärmen och gör så att man går vidare till nästa level när man trycker på enter vid gaten
+    public void NextLevel(string next, bool instantNext) //Ändrar alpha på svarta skärmen och gör så att man går vidare till nästa level när man trycker på enter vid gaten
     {
         if (Raylib.CheckCollisionRecs(p.rect, gate) && Raylib.IsKeyPressed(KeyboardKey.KEY_ENTER))
         {
@@ -67,7 +67,7 @@ public class Level
             Raylib.PauseMusicStream(Global.music);
             wonLevel = true;
         }
-        if (wonLevel)
+        if (wonLevel || instantNext)
         {
             if (alpha.a < 255)
             {
@@ -86,7 +86,7 @@ public class Level
             }
         }
     }
-    public void alphaReset() //Återställer sakta alphavärdet till 0 på svarta skärmen vilket gör den osynlig igen
+    public void AlphaReset() //Återställer sakta alphavärdet till 0 på svarta skärmen vilket gör den osynlig igen
     {
         if (alpha.a > 0 && !wonLevel)
         {
@@ -142,8 +142,8 @@ public class Level
 
 public class Death
 {
-    public int deathTimer = 180;
-    public void DeathHandler(Player p, Reset r, Level levelOne, Level levelTwo, Level levelThree)
+    public static int deathTimer = 180;
+    public static void DeathHandler(Player p, Level levelOne, Level levelTwo, Level levelThree, Level startMenu, UI u)
     {
         if (p.hearts > 0)
         {
@@ -154,7 +154,7 @@ public class Death
             if (deathTimer == 0)
             {
                 p.rect.x = 0;
-                p.rect.y = 100;
+                p.rect.y = 526;
                 p.verticalVelocity = 0f;
                 Global.currentscene = Global.levelDied;
                 deathTimer = 180;
@@ -163,7 +163,7 @@ public class Death
         }
         else
         {
-            r.ResetGame(p, levelOne, levelTwo, levelThree);
+            Reset.ResetGame(p, levelOne, levelTwo, levelThree, startMenu, u);
         }
     }
 }

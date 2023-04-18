@@ -100,6 +100,7 @@ while (!Raylib.WindowShouldClose())
         case "start":
             Raylib.DrawTexture(u.startBG, 0, 0, Color.WHITE);
             Raylib.DrawText("Jumpman!", 350, 250, 75, Color.RED);
+            Raylib.DrawRectangle((Global.screenwidth / 2) - 110, (Global.screenheight / 2) + 40, 220, 95, Color.BLACK);
             Raylib.DrawRectangleRec(u.button, u.buttoncolor);
             Raylib.DrawText("START", 442, 453, 40, Color.RED);
             Raylib.DrawTexture(startMenu.backgrounds[2], 0, 0, startMenu.alpha);
